@@ -156,8 +156,8 @@ def add_stores(ctx, sink: UOp):
     # if this is an assign then we already have a buffer with a view that should be the target of the store
     if x.op is Ops.ASSIGN: stores.append(UOp.store(gbl.view(unwrap(s.st)), s))
     # otherwise we have to create the shapetracker and shrink it to the correct symbolic shape
-    else: stores.append(
-      UOp.store(gbl.reshape(tuple(int(d.vmax) if isinstance(d,UOp) else d for d in s.shape)).shrink(tuple((0,d) for d in s.shape)),s))
+    else: stores.append(UOp.store(
+      gbl.view(unwrap(gbl.reshape(tuple(int(d.vmax) if isinstance(d,UOp) else d for d in s.shape)).shrink(tuple((0,d) for d in s.shape)).st)),s))
   return UOp.sink(*stores, arg=sink.arg)
 # **** fix kernel AST
 
